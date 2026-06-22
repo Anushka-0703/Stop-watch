@@ -1,88 +1,74 @@
-// const resetBtn = document.getElementById("resetButton");
-// const startBtn = document.getElementById("startButton");
-// const pauseBtn = document.getElementById("pauseButton");
+const resetBtn = document.getElementById("resetButton");
+const startBtn = document.getElementById("startButton");
+const pauseBtn = document.getElementById("pauseButton");
 
+const miliSecondText = document.getElementById("milisec");
+const secondText = document.getElementById("sec");
+const minuteText = document.getElementById("min");
+const hourText = document.getElementById("hour");
 
-// startBtn.addEventListener("click", start);
-// resetBtn.addEventListener("click", reset);
-// pauseBtn.addEventListener("click", pause);
+startBtn.addEventListener("click", start);
+resetBtn.addEventListener("click", reset);
+pauseBtn.addEventListener("click", pause);
 
-// let milisecond=0
-// let second=0
-// let minute=0
-// let hour=0
+let miliSecond = 0;
+let second = 0;
+let minute = 0;
+let hour = 0;
 
-
-// function start() {
-//      interval=setInterval(()=>{
-//           console.log("start")
-//      },10)
-// }
-
-
-// function reset() {
-
-// }
-
-
-// function pause() {
-
-// }
-
-
-// script.js
-
-let [hours, minutes, seconds, milliseconds] = [0, 0, 0, 0];
-let timerRef = document.querySelector('.timer');
 let interval = null;
-let isRunning = false;
+
+function start() {
+     //prevent starting a new interval if already running
+     if (interval) return;
+
+     interval = setInterval(() => {
+          miliSecond++;
+
+          //change Second if millisecond exceed 99
+          if (miliSecond === 100) {
+               miliSecond = 0;
+               second++;
+          }
+
+          //change minute if second exceed 59
+          if (second === 60) {
+               second = 0;
+               minute++;
+          }
+
+          //change hour if minute exceed 59
+          if (minute === 60) {
+               minute = 0;
+               hour++;
+          }
+
+          updateDisplay();
+     }, 10);
+}
+
+function reset() {
+     clearInterval(interval); // stop the interval
+     interval = null; //set interval data to null
+
+     //reset all the value to 0
+     miliSecond = 0;
+     second = 0;
+     minute = 0;
+     hour = 0;
+
+     updateDisplay();
+}
+
+function pause() {
+     clearInterval(interval); // stop the interval
+     interval = null; //set interval data to null
+}
 
 function updateDisplay() {
-  let h = hours < 10 ? "0" + hours : hours;
-  let m = minutes < 10 ? "0" + minutes : minutes;
-  let s = seconds < 10 ? "0" + seconds : seconds;
-  let ms = milliseconds < 10 ? "0" + milliseconds : milliseconds;
-  timerRef.innerHTML = `${h} : ${m} : ${s} : ${ms}`;
+     miliSecondText.textContent =
+          miliSecond < 10 ? "0" + miliSecond : miliSecond;
+     secondText.textContent = second < 10 ? "0" + second : second;
+     minuteText.textContent = minute < 10 ? "0" + minute : minute;
+     hourText.textContent = hour < 10 ? "0" + hour : hour;
 }
-
-function startTimer() {
-  if (!isRunning) {
-    isRunning = true;
-    interval = setInterval(() => {
-      milliseconds++;
-      if (milliseconds === 100) {
-        milliseconds = 0;
-        seconds++;
-      }
-      if (seconds === 60) {
-        seconds = 0;
-        minutes++;
-      }
-      if (minutes === 60) {
-        minutes = 0;
-        hours++;
-      }
-      updateDisplay();
-    }, 10);
-  }
-}
-
-function pauseTimer() {
-  clearInterval(interval);
-  isRunning = false;
-}
-
-function resetTimer() {
-  clearInterval(interval);
-  [hours, minutes, seconds, milliseconds] = [0, 0, 0, 0];
-  isRunning = false;
-  updateDisplay();
-}
-
-// Button event listeners
-document.getElementById('startButton').addEventListener('click', startTimer);
-document.getElementById('pauseButton').addEventListener('click', pauseTimer);
-document.getElementById('resetButton').addEventListener('click', resetTimer);
-
-// Initialize display
-updateDisplay();
